@@ -1,0 +1,8 @@
+certifi==2020.12.5
+chardet==4.0.0
+idna==2.10
+py2exe==0.9.2.2
+python-a2s==1.1.1
+requests==2.25.1
+urllib3==1.26.4
+git+https://github.com/Rapptz/discord.py
