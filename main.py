@@ -1,17 +1,10 @@
 import a2s
-import discord
 from discord.ext import commands, tasks
-import json
+import config
+import db
 
 #Command Prefix
 client = commands.Bot(command_prefix = '.')
-
-#Server Ips To Watch, works for all games with 
-CI803 = ("95.156.213.149", 27015)
-FPE1 = ("149.56.106.59",28015)
-
-#List To Store Enemy Players 
-EnemyPlayers = []
 
 
  #Start Bot 
@@ -23,80 +16,96 @@ async def on_ready():
  #Gets Player Count 
 @client.command()
 async def getplayercount(ctx):
-    playerdata = a2s.info(CI803)
+    playerdata = a2s.info(config.Server)
     await ctx.send("There are " + str(playerdata.player_count) + " Players Connected To " + playerdata.server_name)
 
  #Gets Players On Server
 @client.command()
 async def players(ctx):
-    players = a2s.players(CI803)
-    playerdata = a2s.info(CI803)
+    players = a2s.players(config.Server)
+    playerdata = a2s.info(config.Server)
     my_list = []
     for name in players:
         my_list.append(name.name)
 
     await ctx.send("Here are Players That are Currently Connected to " +str(playerdata.server_name) + " " + str(my_list))
 
- #Adds A Enemy to Your List
+ #Adds A Enemy to DB
 @client.command()
 async def addenemy(ctx,arg):
-    EnemyPlayers.append(arg)
+    db.add_enemy(arg)
     await ctx.send(arg + " Is Now Being Watched Use Command .enemys to see the full list of watched enemys.")
 
- #Handle Error
+#Remove Enemy From DB
+@client.command()
+async def removeenemy(ctx,arg):
+    db.remove_enemy(arg)
+    await ctx.send(arg + " Is Now removed use .enemys to see the full list of watched enemys.")
+
+#Handle Error
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please Add a Player To Watch")
+            await ctx.send("Please Add a Player To Watch/Delete")
 
 #Returns Enemy List
 @client.command()
 async def enemys(ctx):
-    await ctx.send(str(EnemyPlayers))
+    playerList = db.enemy_list()
+    await ctx.send(str(playerList))
 
 #Gives Update Of the Server with enemys
 @client.command()
-async def enemyWatcher(ctx):
-    players = a2s.players(CI803)
-    currentPlayersList = []
+async def checkEnemys(ctx):
+    channel = client.get_channel(config.channelNumber)
+    players = a2s.players(config.Server)
+    serverdata = a2s.info(config.Server)
     enemysOnServer = []
-    for name in players:
-        currentPlayersList.append(name.name)
+    watchedEnemys = db.enemy_list()
 
-    for i in EnemyPlayers:
-        if i in currentPlayersList:
-            enemysOnServer.append(i)
-    print(str(enemysOnServer))
+
+    #Search for Enemys On The Server
+    for name in players:
+        #Removes Epic Games Players For Ark Servers
+        if len(name.name) > 0:
+            if name.name in str(watchedEnemys):
+             enemysOnServer.append(name.name)
+
+    formmated = ', '.join(enemysOnServer)
 
     if len(enemysOnServer) > 0:
-        await ctx.send(str(EnemyPlayers) + " is all online watch out")
+        await channel.send("Here are the Connected Enemys " + str(formmated) )
     else:
-        await ctx.send("No Enemys Online")
+        await channel.send( "No Enemys Connected")
 
 
+#Gives Update On Server Every 10 Minutes
 @tasks.loop(seconds = 600)
 async def checkup():
-    channel = client.get_channel(839249727613960252)
-    players = a2s.players(CI803)
-    serverdata = a2s.info(CI803)
-    currentPlayersList = []
+    channel = client.get_channel(config.channelNumber)
+    players = a2s.players(config.Server)
+    serverdata = a2s.info(config.Server)
     enemysOnServer = []
-    for name in players:
-        currentPlayersList.append(name.name)
+    watchedEnemys = db.enemy_list()
 
-    for i in EnemyPlayers:
-        if i in currentPlayersList:
-            enemysOnServer.append(i)
+
+    #Search for Enemys On The Server
+    for name in players:
+        #Removes Epic Games Players For Ark Servers
+        if len(name.name) > 0:
+            if name.name in str(watchedEnemys):
+             enemysOnServer.append(name.name)
+
+    formmated = ', '.join(enemysOnServer)
 
     if len(enemysOnServer) > 0:
-        await channel.send("This is " + str(serverdata.server_name) + " 10 Minute Update There is " + str(serverdata.player_count) + " Players Online with these enemys connected " + str(enemysOnServer) )
+        await channel.send("This is " + str(serverdata.server_name) + " 10 Minute Update There is " + str(serverdata.player_count) + " Players Online with these enemys connected " + str(formmated))
     else:
         await channel.send("This is " + str(serverdata.server_name) + " 10 Minute Update There is " + str(serverdata.player_count) + " Players Online with no enemys Connected")
 
 
 
-
-client.run('')
+client.run(config.botKey)
 
 
 
