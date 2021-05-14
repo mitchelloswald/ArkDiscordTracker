@@ -11,6 +11,7 @@ client = commands.Bot(command_prefix = '.')
 @client.event
 async def on_ready():
     print("Bot Online")
+    db.create_table()
     checkup.start()
  
  #Gets Player Count 
