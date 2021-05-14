@@ -44,7 +44,7 @@ async def removeenemy(ctx,*arg):
     #format the arg
     formatted  = ' '.join(arg)
     db.remove_enemy(formatted)
-    await ctx.send(*arg + " Is Now removed use .enemys to see the full list of watched enemys.")
+    await ctx.send(formatted + " Is Now removed use .enemys to see the full list of watched enemys.")
 
 #Handle Error
 @client.event
