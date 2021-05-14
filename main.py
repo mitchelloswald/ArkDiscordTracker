@@ -16,7 +16,7 @@ async def on_ready():
  
  #Gets Player Count 
 @client.command()
-async def getplayercount(ctx):
+async def getPlayerCount(ctx):
     playerdata = a2s.info(config.Server)
     await ctx.send("There are " + str(playerdata.player_count) + " Players Connected To " + playerdata.server_name)
 
@@ -33,7 +33,7 @@ async def players(ctx):
 
  #Adds A Enemy to DB
 @client.command()
-async def addenemy(ctx,*arg):
+async def addEnemy(ctx,*arg):
     #format the arg
     formatted  = ' '.join(arg)
     db.add_enemy(formatted)
@@ -41,7 +41,7 @@ async def addenemy(ctx,*arg):
 
 #Remove Enemy From DB
 @client.command()
-async def removeenemy(ctx,*arg):
+async def removeEnemy(ctx,*arg):
     #format the arg
     formatted  = ' '.join(arg)
     db.remove_enemy(formatted)
