@@ -5,11 +5,11 @@
  Simply install requirments, fill out the config with your discord bot key, channel, and server you would like to watch then run main.py
  
  # Commands
-.getplayercount returns how many players that are connected to the server
+.getPlayerCount returns how many players that are connected to the server
 
-.addenemy(string) accepts a string, adds them to the database and tracks when they are on the server
+.addEnemy(string) accepts a string, adds them to the database and tracks when they are on the server
 
-.removeenemy(string) accepts a string, removes enemy from database and stops tracking them
+.removeEnemy(string) accepts a string, removes enemy from database and stops tracking them
 
 .enemys returns list of enemys currently being tracked
 
