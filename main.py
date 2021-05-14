@@ -32,15 +32,19 @@ async def players(ctx):
 
  #Adds A Enemy to DB
 @client.command()
-async def addenemy(ctx,arg):
-    db.add_enemy(arg)
-    await ctx.send(arg + " Is Now Being Watched Use Command .enemys to see the full list of watched enemys.")
+async def addenemy(ctx,*arg):
+    #format the arg
+    formatted  = ' '.join(arg)
+    db.add_enemy(formatted)
+    await ctx.send(formatted + " Is Now Being Watched Use Command .enemys to see the full list of watched enemys.")
 
 #Remove Enemy From DB
 @client.command()
-async def removeenemy(ctx,arg):
-    db.remove_enemy(arg)
-    await ctx.send(arg + " Is Now removed use .enemys to see the full list of watched enemys.")
+async def removeenemy(ctx,*arg):
+    #format the arg
+    formatted  = ' '.join(arg)
+    db.remove_enemy(formatted)
+    await ctx.send(*arg + " Is Now removed use .enemys to see the full list of watched enemys.")
 
 #Handle Error
 @client.event
