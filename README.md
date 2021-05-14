@@ -9,7 +9,7 @@
 
 .addenemy(string) accepts a string, adds them to the database and tracks when they are on the server
 
-.removeenemy(string) removes enemy from database and stops them
+.removeenemy(string) accepts a string, removes enemy from database and stops tracking them
 
 .enemys returns list of enemys currently being tracked
 
